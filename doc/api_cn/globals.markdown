@@ -1,20 +1,16 @@
-# Global Objects
+# 全局对象
 
 <!-- type=misc -->
 
-These objects are available in all modules. Some of these objects aren't
-actually in the global scope but in the module scope - this will be noted.
+这些对象在所有模块中都能被访问。有些对象实际上不是在全局范围而只是在模块范围内可访问，这些对象会有提示。
 
 ## global
 
 <!-- type=global -->
 
-* {Object} The global namespace object.
+* {Object} 全局命名空间对象。
 
-In browsers, the top-level scope is the global scope. That means that in
-browsers if you're in the global scope `var something` will define a global
-variable. In Node this is different. The top-level scope is not the global
-scope; `var something` inside a Node module will be local to that module.
+在浏览器中，顶级作用域是全局作用域。这意味着在浏览器中，如果你在全局作用域中，`var something` 会定义为一个全局变量。在Node中这是不同的。顶级作用域并非全局作用域，在Node模块中 `var something` 只会成为这个模块的本地变量，即只属于该模块。
 
 ## process
 
@@ -22,7 +18,7 @@ scope; `var something` inside a Node module will be local to that module.
 
 * {Object}
 
-The process object. See the [process object][] section.
+进程对象，参见 [process object][] 章节。
 
 ## console
 
@@ -30,7 +26,7 @@ The process object. See the [process object][] section.
 
 * {Object}
 
-Used to print to stdout and stderr. See the [console][] section.
+控制台对象，用以打印标准输出和标准错误，参见 [console][] 章节。
 
 ## Class: Buffer
 
@@ -38,7 +34,7 @@ Used to print to stdout and stderr. See the [console][] section.
 
 * {Function}
 
-Used to handle binary data. See the [buffer section][]
+缓存类，用以处理二进制数据，参见 [buffer][] 章节。
 
 ## require()
 
@@ -46,42 +42,38 @@ Used to handle binary data. See the [buffer section][]
 
 * {Function}
 
-To require modules. See the [Modules][] section.  `require` isn't actually a
-global but rather local to each module.
+require()函数，参见 [Modules][] 章节。 `require` 准确地说并不是一个全局方法，而是每个模块自有的本地方法。
+
 
 ### require.resolve()
 
-Use the internal `require()` machinery to look up the location of a module,
-but rather than loading the module, just return the resolved filename.
+* {Function}
+
+使用内部 `require()` 机制查找模块的路径，但并不加载模块，只是返回解析过的文件路径。
 
 ### require.cache
 
 * {Object}
 
-Modules are cached in this object when they are required. By deleting a key
-value from this object, the next `require` will reload the module.
+当模块被加载是缓存在该对象中。通过从该对象中删除对应键值对，下一次调用 `require` 会重新加载这个模块。
 
 ### require.extensions
 
-    Stability: 0 - Deprecated
+    稳定度: 0 - 不赞成
 
 * {Object}
 
-Instruct `require` on how to handle certain file extensions.
+指示 `require` 如何去处理某些特定的文件后缀名。
 
-Process files with the extension `.sjs` as `.js`:
+例如：处理后缀名为 `.sjs` 的文件如何 `.js` 文件
 
     require.extensions['.sjs'] = require.extensions['.js'];
 
-**Deprecated**  In the past, this list has been used to load
-non-JavaScript modules into Node by compiling them on-demand.
-However, in practice, there are much better ways to do this, such as
-loading modules via some other Node program, or compiling them to
-JavaScript ahead of time.
+**不赞成**  
 
-Since the Module system is locked, this feature will probably never go
-away.  However, it may have subtle bugs and complexities that are best
-left untouched.
+之前，该列表被用于按需编译非JavaScript的模块并加载到Node中。然而在使用中发现，有许多更好的方法来实现。例如通过其他的Node程序来加载模块，或者提前将他们编译为JavaScript。
+
+由于模块系统（API）已被锁定，该功能可能永远不会去掉。但他可能会产生微妙的错误和复杂的问题，最好留着不再使用。
 
 ## __filename
 
@@ -89,17 +81,14 @@ left untouched.
 
 * {String}
 
-The filename of the code being executed.  This is the resolved absolute path
-of this code file.  For a main program this is not necessarily the same
-filename used in the command line.  The value inside a module is the path
-to that module file.
+当前被执行代码的文件路径。是该代码经过解析后的绝对路径。对于主程序来说，这和命令行中所用的文件路径未必是相同的。此变量在模块内部的值就是该模块文件的绝对路径。
 
-Example: running `node example.js` from `/Users/mjr`
+例如: 从 `/Users/mjr` 调用 `node example.js`
 
     console.log(__filename);
     // /Users/mjr/example.js
 
-`__filename` isn't actually a global but rather local to each module.
+`__filename` 并不是全局变量，而是模块本地变量。
 
 ## __dirname
 
@@ -107,14 +96,14 @@ Example: running `node example.js` from `/Users/mjr`
 
 * {String}
 
-The name of the directory that the currently executing script resides in.
+当前执行脚本所在目录的目录名。
 
-Example: running `node example.js` from `/Users/mjr`
+例如: 从 `/Users/mjr` 调用 `node example.js`
 
     console.log(__dirname);
     // /Users/mjr
 
-`__dirname` isn't actually a global but rather local to each module.
+`__dirname` 并不是全局变量，而是模块本地变量。
 
 
 ## module
@@ -123,38 +112,30 @@ Example: running `node example.js` from `/Users/mjr`
 
 * {Object}
 
-A reference to the current module. In particular
-`module.exports` is used for defining what a module exports and makes
-available through `require()`.
+对当前模块的引用。特别的 `module.exports` 被用来定义该模块的输出，并且可以通过 `require()` 获取。
 
-`module` isn't actually a global but rather local to each module.
+`module` 并不是全局对象，而是模块本地对象。
 
-See the [module system documentation][] for more information.
+更多信息，参见 [module system documentation][] 。
 
 ## exports
 
 <!-- type=var -->
 
-A reference to the `module.exports` that is shorter to type.
-See [module system documentation][] for details on when to use `exports` and
-when to use `module.exports`.
+对 `module.exports` 的引用的简写。
+何时使用 `exports` 或 `module.exports` 的详细信息，参见 [module system documentation][] 。
 
-`exports` isn't actually a global but rather local to each module.
+`exports` 并不是全局变量，而是模块本地变量。
 
-See the [module system documentation][] for more information.
-
-See the [module section][] for more information.
+更多信息，参见 [module][] 章节。
 
 ## setTimeout(cb, ms)
 
-Run callback `cb` after *at least* `ms` milliseconds. The actual delay depends
-on external factors like OS timer granularity and system load.
+*至少* 在 `ms` 毫秒之后调用回调函数 `cb` 。实际延迟时间依赖于外部因素，例如操作系统的时间颗粒度和系统负载。
 
-The timeout must be in the range of 1-2,147,483,647 inclusive. If the value is
-outside that range, it's changed to 1 millisecond. Broadly speaking, a timer
-cannot span more than 24.8 days.
+`ms` 值必须在1-2,147,483,647（上下包含）之内。如果超出范围，会被调整为1毫秒。概括来讲，时间跨多不能超过24.8天。
 
-Returns an opaque value that represents the timer.
+返回一个代表该计时器的句柄。
 
 ## clearTimeout(t)
 
@@ -182,9 +163,8 @@ will not execute.
 
 The timer functions are global variables. See the [timers][] section.
 
-[buffer section]: buffer.html
-[module section]: modules.html
-[module system documentation]: modules.html
+[buffer]: buffer.html
+[module]: modules.html
 [Modules]: modules.html#modules_modules
 [process object]: process.html#process_process
 [console]: console.html

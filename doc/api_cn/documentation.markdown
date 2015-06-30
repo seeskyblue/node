@@ -6,9 +6,9 @@
 
 属性类型、方法参数和事件处理的参数会被详细列在对应的标题下。
 
-每个`.html`文件都有一个对应的内容相同的结构化的`.json`文件来表示。这个特性还是实验性质的，以便于集成开发工具（IDE）或其他工具希望能对本文档做操作。
+每个 `.html` 文件都有一个对应的内容相同的结构化的 `.json` 文件来表示。这个特性还是实验性质的，以便于集成开发工具（IDE）或其他工具希望能对本文档做操作。
 
-每个`.html`文件和`.json`文件是基于对应的在node源代码中`doc/api/`文件夹中的`.markdown`文件生成的。使用`tools/doc/generate.js` 程序进行生成。HTML模板文件是`doc/template.html`。
+每个 `.html` 文件和 `.json` 文件是基于对应的在node源代码中 `doc/api/` 文件夹中的 `.markdown` 文件生成的。使用 `tools/doc/generate.js` 程序进行生成。HTML模板文件是 `doc/template.html` 。
 
 ## 稳定度
 
