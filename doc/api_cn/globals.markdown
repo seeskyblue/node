@@ -133,35 +133,29 @@ require()函数，参见 [Modules][] 章节。 `require` 准确地说并不是�
 
 *至少* 在 `ms` 毫秒之后调用回调函数 `cb` 。实际延迟时间依赖于外部因素，例如操作系统的时间颗粒度和系统负载。
 
-`ms` 值必须在1-2,147,483,647（上下包含）之内。如果超出范围，会被调整为1毫秒。概括来讲，时间跨多不能超过24.8天。
+`ms` 值必须在1 ~ 2,147,483,647（上下包含）之内。如果值超出该范围，会被调整为1毫秒。概括来讲，时间跨度不能超过24.8天。
 
 返回一个代表该计时器的句柄。
 
 ## clearTimeout(t)
 
-Stop a timer that was previously created with `setTimeout()`. The callback will
-not execute.
+停止之前通过 `setTimeout()` 创建的计时器，计时器的回调函数不会再被执行。
 
 ## setInterval(cb, ms)
 
-Run callback `cb` repeatedly every `ms` milliseconds. Note that the actual
-interval may vary, depending on external factors like OS timer granularity and
-system load. It's never less than `ms` but it may be longer.
+在每个 `ms` 毫秒周期重复调用回调函数 `cb` 。注意实际的调用周期是变化的，依赖于外部因素例如操作系统时间颗粒度和系统负载。绝不会少于 `ms` ，只可能会更久。
 
-The interval must be in the range of 1-2,147,483,647 inclusive. If the value is
-outside that range, it's changed to 1 millisecond. Broadly speaking, a timer
-cannot span more than 24.8 days.
+周期间隔的值必须在1 ~ 2,147,483,647（上下包含）之内。如果值超出该范围，会被调整为1毫秒。概括来讲，时间跨度不能超过24.8天。
 
-Returns an opaque value that represents the timer.
+返回一个代表该计时器的句柄。
 
 ## clearInterval(t)
 
-Stop a timer that was previously created with `setInterval()`. The callback
-will not execute.
+停止之前通过 `setInterval()` 创建的计时器，计时器的回调函数不会再被执行。
 
 <!--type=global-->
 
-The timer functions are global variables. See the [timers][] section.
+计时器函数属于全局变量. 参见 [timers][] 章节。
 
 [buffer]: buffer.html
 [module]: modules.html
