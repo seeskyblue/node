@@ -2,7 +2,7 @@
 
 <!-- type=misc -->
 
-本文的目的是从参考和概念的角度全面解释Node.js的API，每个章节描述一个内置模块或高级概念。
+本文的目的是从参考和概念的角度全面解释Node.js的应用程序接口（API），每个章节描述一个内置模块或高级概念。
 
 属性类型、方法参数和事件处理的参数会被详细列在对应的标题下。
 
@@ -24,42 +24,34 @@
 ```
 
 ```
-Stability: 1 - Experimental
-This feature was introduced recently, and may change
-or be removed in future versions.  Please try it out and provide feedback.
-If it addresses a use-case that is important to you, tell the node core team.
+稳定度：1 - 实验性
+该特性是最近引入的，可能在未来的版本中修改或删除。请使用之后提供反馈，如果他正好适合一个对你来说重要的用户用例，请告诉node的核心团队。
 ```
 
 ```
-Stability: 2 - Unstable
-The API is in the process of settling, but has not yet had
-sufficient real-world testing to be considered stable. Backwards-compatibility
-will be maintained if reasonable.
+稳定度：2 - 不稳定
+该API正在稳定的进程中，但还未在实际环境中经过足够的测试验证为稳定。如果该特性合理会被进行向后兼容性维护。
 ```
 
 ```
-Stability: 3 - Stable
-The API has proven satisfactory, but cleanup in the underlying
-code may cause minor changes.  Backwards-compatibility is guaranteed.
+稳定度：3 - 稳定
+该API已被验证为符合要求，但代码中可能存在潜在的优化会造成细微调整。向后兼容性是可以保证的。
 ```
 
 ```
-Stability: 4 - API Frozen
-This API has been tested extensively in production and is
-unlikely to ever have to change.
+稳定度：4 - API冻结
+该API在生产环境中被广泛测试过并看起来不再会改变。
 ```
 
 ```
-Stability: 5 - Locked
-Unless serious bugs are found, this code will not ever
-change.  Please do not suggest changes in this area; they will be refused.
+稳定度：5 - 锁定
+除非被发现严重的问题，否则不会修改代码。请勿建议在这些代码中进行修改，通常会被拒绝。
 ```
 
-## JSON Output
+## JSON 输出
 
-    Stability: 1 - Experimental
+    稳定度: 1 - 实验性
 
-Every HTML file in the markdown has a corresponding JSON file with the
-same data.
+每个通过markdown生成的HTML文件都对应一个具有相同数据的JSON文件。
 
-This feature is new as of node v0.6.12.  It is experimental.
+该特性自node v0.6.12开始引入，目前还属于实验性。
