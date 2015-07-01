@@ -1,56 +1,51 @@
 # console
 
-    Stability: 4 - API Frozen
+    稳定度: 4 - API冻结
 
 * {Object}
 
 <!--type=global-->
 
-For printing to stdout and stderr.  Similar to the console object functions
-provided by most web browsers, here the output is sent to stdout or stderr.
+用于输出标准输出（stdout）和标准错误输出（stderr）。类似于大多说浏览器提供的控制台对象方法，但在Node中输出被发送到标准输出和标准错误输出。
 
-The console functions are synchronous when the destination is a terminal or
-a file (to avoid lost messages in case of premature exit) and asynchronous
-when it's a pipe (to avoid blocking for long periods of time).
+当目标是终端或文件的时候，控制台方法是同步的（以避免过早退出时丢失信息）。而当目标是管道时，是异步的（以避免长时间的阻塞）。
 
-That is, in the following example, stdout is non-blocking while stderr
-is blocking:
+在下面的例子中，标准输出是非阻塞的，而标准错误输出是阻塞的：
 
     $ node script.js 2> error.log | tee info.log
 
-In daily use, the blocking/non-blocking dichotomy is not something you
-should worry about unless you log huge amounts of data.
-
+在日常使用中，阻塞还是非阻塞并不是你所需要担心的，除非你的日志包含非常大量的数据需要输出。
 
 ## console.log([data][, ...])
 
-Prints to stdout with newline. This function can take multiple arguments in a
-`printf()`-like way. Example:
+在标准输出中输出新行。该函数可以接受多个参数，类似于 `printf()` ，例如：
 
     var count = 5;
     console.log('count: %d', count);
     // prints 'count: 5'
 
-If formatting elements are not found in the first string then `util.inspect`
-is used on each argument.  See [util.format()][] for more information.
+如果格式化元素没有在第一个字符串中找到，那么 `util.inspect` 便会用来处理每一个参数。
+更多信息参见 [util.format()][] .
 
 ## console.info([data][, ...])
 
-Same as `console.log`.
+类似 `console.log` 。
 
 ## console.error([data][, ...])
 
-Same as `console.log` but prints to stderr.
+类似 `console.log` ，但是输出到标准错误输出（stderr）。
 
 ## console.warn([data][, ...])
 
-Same as `console.error`.
+类似 `console.error` 。
 
 ## console.dir(obj[, options])
 
 Uses `util.inspect` on `obj` and prints resulting string to stdout. This function
 bypasses any custom `inspect()` function on `obj`. An optional *options* object
 may be passed that alters certain aspects of the formatted string:
+
+使用 `util.inspect` 处理 `obj` 并将结果输出到标准输出。该函数会忽略任何 `obj` 上自定义的 `inspect()` 函数。
 
 - `showHidden` - if `true` then the object's non-enumerable properties will be
 shown too. Defaults to `false`.
