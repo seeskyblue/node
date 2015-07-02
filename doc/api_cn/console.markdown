@@ -41,29 +41,21 @@
 
 ## console.dir(obj[, options])
 
-Uses `util.inspect` on `obj` and prints resulting string to stdout. This function
-bypasses any custom `inspect()` function on `obj`. An optional *options* object
-may be passed that alters certain aspects of the formatted string:
+使用 `util.inspect` 处理 `obj` 并将结果字符串输出到标准输出。该函数会忽略任何 `obj` 上自定义的 `inspect()` 函数。可选参数 *options* 对象可以传入来改变格式化字符串的某些具体方面：
 
-使用 `util.inspect` 处理 `obj` 并将结果输出到标准输出。该函数会忽略任何 `obj` 上自定义的 `inspect()` 函数。
+- `showHidden` - 当为 `true` 时，对象的不可枚举（non-enumerable）属性也会被显示出来，默认为 `false` 。
 
-- `showHidden` - if `true` then the object's non-enumerable properties will be
-shown too. Defaults to `false`.
+- `depth` - 告诉 `inspect` 在格式化对象时进行多少次递归调用。这对检查大型复杂的对象时非常有用。默认为 `2` 。传入 `null` 进行无限次数的递归调用。
 
-- `depth` - tells `inspect` how many times to recurse while formatting the
-object. This is useful for inspecting large complicated objects. Defaults to
-`2`. To make it recurse indefinitely pass `null`.
-
-- `colors` - if `true`, then the output will be styled with ANSI color codes.
-Defaults to `false`. Colors are customizable, see below.
+- `colors` - 当为 `true` 时，输出结果的样式会根据美国国家标准学会（ANSI）标准来着色代码。默认为 `false` 。颜色是可以自定义的，参见后续介绍。
 
 ## console.time(label)
 
-Mark a time.
+标记一个时间。
 
 ## console.timeEnd(label)
 
-Finish timer, record output. Example:
+结束计时器，记录输出结果。例如：
 
     console.time('100-elements');
     for (var i = 0; i < 100; i++) {
@@ -74,13 +66,11 @@ Finish timer, record output. Example:
 
 ## console.trace(message[, ...])
 
-Print to stderr `'Trace :'`, followed by the formatted message and stack trace
-to the current position.
+输出到标准错误输出 `'Trace :'` ，后面紧接着格式化的消息字符串和当前代码位置的堆栈调用信息。
 
 ## console.assert(value[, message][, ...])
 
-Similar to [assert.ok()][], but the error message is formatted as
-`util.format(message...)`.
+类似 [assert.ok()][], 但是错误信息是经过格式化的，如同 `util.format(message...)`。
 
 [assert.ok()]: assert.html#assert_assert_value_message_assert_ok_value_message
 [util.format()]: util.html#util_util_format_format
