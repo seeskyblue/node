@@ -1,24 +1,18 @@
 # Timers
 
-    Stability: 5 - Locked
+    稳定度: 5 - 锁定
 
-All of the timer functions are globals.  You do not need to `require()`
-this module in order to use them.
+所有的计时器函数都是全局的。不需要使用 `require()` 引用该模块来使用。
 
 ## setTimeout(callback, delay[, arg][, ...])
 
-To schedule execution of a one-time `callback` after `delay` milliseconds. Returns a
-`timeoutObject` for possible use with `clearTimeout()`. Optionally you can
-also pass arguments to the callback.
+用以按计划在 `delay` 毫秒之后来执行一次性的 `callback` 函数。 返回一个 `timeoutObject` 句柄以便可能使用 `clearTimeout()` 调用。可选的，你也可以传递参数给 `callback` 回调函数。
 
-It is important to note that your callback will probably not be called in exactly
-`delay` milliseconds - Node.js makes no guarantees about the exact timing of when
-the callback will fire, nor of the ordering things will fire in. The callback will
-be called as close as possible to the time specified.
+有必要注意，回调函数可能不是在很精确的 `delay` 毫秒之后被调用 —— Node.js不保证回调函数在精确的时间被调用，也不保证按顺序调用。回调函数会被尽可能的按照指定时间被调用。
 
 ## clearTimeout(timeoutObject)
 
-Prevents a timeout from triggering.
+阻止一个 timeout 计时器被触发（调用回调函数）。
 
 ## setInterval(callback, delay[, arg][, ...])
 
