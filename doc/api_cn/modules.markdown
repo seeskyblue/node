@@ -1,20 +1,18 @@
 # Modules
 
-    Stability: 5 - Locked
+    稳定度: 5 - 锁定
 
 <!--name=module-->
 
-Node has a simple module loading system.  In Node, files and modules are in
-one-to-one correspondence.  As an example, `foo.js` loads the module
-`circle.js` in the same directory.
+Node有一个简单的模块加载系统。在Node中，文件和模块是一一对应的。例如， `foo.js` 加载了同目录下的 `circle.js` 模块。 
 
-The contents of `foo.js`:
+`foo.js` 代码为:
 
     var circle = require('./circle.js');
     console.log( 'The area of a circle of radius 4 is '
                + circle.area(4));
 
-The contents of `circle.js`:
+`circle.js` 代码为:
 
     var PI = Math.PI;
 
@@ -26,25 +24,19 @@ The contents of `circle.js`:
       return 2 * PI * r;
     };
 
-The module `circle.js` has exported the functions `area()` and
-`circumference()`.  To add functions and objects to the root of your module,
-you can add them to the special `exports` object.
+`circle.js` 模块输出的是  `area()` 和 `circumference()` 函数。如需要添加函数或者对象到根模块，可以将他们添加到特殊对象 `exports` 。
 
-Variables local to the module will be private, as though the module was wrapped
-in a function. In this example the variable `PI` is private to `circle.js`.
+模块本地的变量对于模块来说是私有的（private），就像这个模块是被function关键字包装过。在这个例子中，变量 `PI` 对于 `circle.js` 模块来说是私有的。
 
-If you want the root of your module's export to be a function (such as a
-constructor) or if you want to export a complete object in one assignment
-instead of building it one property at a time, assign it to `module.exports`
-instead of `exports`.
+如果你需要把模块输出的根作为一个函数（例如构造函数），或者你希望一次输出一个完整的对象而不是每个属性都构造一次，那就使用 `module.exports` 来代替 `exports` 。
 
-Below, `bar.js` makes use of the `square` module, which exports a constructor:
+如下， `bar.js` 使用了以构造函数作为输出的 `square` 模块：
 
     var square = require('./square.js');
     var mySquare = square(2);
     console.log('The area of my square is ' + mySquare.area());
 
-The `square` module is defined in `square.js`:
+`square` 模块在 `square.js` 文件中定义:
 
     // assigning to exports will not modify module, must use module.exports
     module.exports = function(width) {
