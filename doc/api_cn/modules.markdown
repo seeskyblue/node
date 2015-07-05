@@ -1,10 +1,10 @@
-# Modules
+# Modules 模块
 
     稳定度: 5 - 锁定
 
 <!--name=module-->
 
-Node有一个简单的模块加载系统。在Node中，文件和模块是一一对应的。例如， `foo.js` 加载了同目录下的 `circle.js` 模块。 
+Node有一个简单的模块加载系统。在Node中，文件和模块是一一对应的。例如，`foo.js` 加载了同目录下的 `circle.js` 模块。 
 
 `foo.js` 代码为:
 
@@ -24,13 +24,13 @@ Node有一个简单的模块加载系统。在Node中，文件和模块是一一
       return 2 * PI * r;
     };
 
-`circle.js` 模块输出的是  `area()` 和 `circumference()` 函数。如需要添加函数或者对象到根模块，可以将他们添加到特殊对象 `exports` 。
+`circle.js` 模块输出的是  `area()` 和 `circumference()` 函数。如需要添加函数或者对象到根模块，可以将他们添加到特殊对象 `exports`。
 
 模块本地的变量对于模块来说是私有的（private），就像这个模块是被function关键字包装过。在这个例子中，变量 `PI` 对于 `circle.js` 模块来说是私有的。
 
-如果你需要把模块输出的根作为一个函数（例如构造函数），或者你希望一次输出一个完整的对象而不是每个属性都构造一次，那就使用 `module.exports` 来代替 `exports` 。
+如果你需要把模块输出的根作为一个函数（例如构造函数），或者你希望一次输出一个完整的对象而不是每个属性都构造一次，那就使用 `module.exports` 来代替 `exports`。
 
-如下， `bar.js` 使用了以构造函数作为输出的 `square` 模块：
+如下，`bar.js` 使用了以构造函数作为输出的 `square` 模块：
 
     var square = require('./square.js');
     var mySquare = square(2);
@@ -47,16 +47,15 @@ Node有一个简单的模块加载系统。在Node中，文件和模块是一一
       };
     }
 
-The module system is implemented in the `require("module")` module.
+模块系统是通过 `require("module")` 的模式来实现的。
 
-## Cycles
+## Cycles 循环依赖
 
 <!--type=misc-->
 
-When there are circular `require()` calls, a module might not have finished
-executing when it is returned.
+当有循环 `require()` 调用时，模块返回的时候可能还未执行结束。
 
-Consider this situation:
+考虑一下这样的情况：
 
 `a.js`:
 
@@ -83,14 +82,9 @@ Consider this situation:
     var b = require('./b.js');
     console.log('in main, a.done=%j, b.done=%j', a.done, b.done);
 
-When `main.js` loads `a.js`, then `a.js` in turn loads `b.js`.  At that
-point, `b.js` tries to load `a.js`.  In order to prevent an infinite
-loop, an **unfinished copy** of the `a.js` exports object is returned to the
-`b.js` module.  `b.js` then finishes loading, and its `exports` object is
-provided to the `a.js` module.
+当 `main.js` 开始加载 `a.js` 后，接着 `a.js` 开始加载 `b.js`。在这个时刻，`b.js` 开始试图加载 `a.js`。为了避免无限循环的加载，一个 `a.js` **未执行完成复制品** 的输出对象被返回给 `b.js` 模块。然后 `b.js` 模块完成了加载，然后它的 `exports` 对象被返回给 `a.js` 模块。
 
-By the time `main.js` has loaded both modules, they're both finished.
-The output of this program would thus be:
+此时，`main.js` 已经完成了加载这两个模块，并且他们都已经执行完成。程序的输出结果为：
 
     $ node main.js
     main starting
@@ -102,144 +96,97 @@ The output of this program would thus be:
     a done
     in main, a.done=true, b.done=true
 
-If you have cyclic module dependencies in your program, make sure to
-plan accordingly.
+如果你的程序中有模块循环依赖，确保有相应的（循环依赖加载顺序）准备。
 
-## Core Modules
-
-<!--type=misc-->
-
-Node has several modules compiled into the binary.  These modules are
-described in greater detail elsewhere in this documentation.
-
-The core modules are defined in node's source in the `lib/` folder.
-
-Core modules are always preferentially loaded if their identifier is
-passed to `require()`.  For instance, `require('http')` will always
-return the built in HTTP module, even if there is a file by that name.
-
-## File Modules
+## Core Modules 核心模块
 
 <!--type=misc-->
 
-If the exact filename is not found, then node will attempt to load the
-required filename with the added extension of `.js`, `.json`, and then `.node`.
+Node有几个模块是被编译为二进制的（核心模块）。这些模块在本文档的其他地方有更加详细的描述。
 
-`.js` files are interpreted as JavaScript text files, and `.json` files are
-parsed as JSON text files. `.node` files are interpreted as compiled addon
-modules loaded with `dlopen`.
+这些核心模块被定义在Node源代码中的 `lib/` 文件夹内。
 
-A module prefixed with `'/'` is an absolute path to the file.  For
-example, `require('/home/marco/foo.js')` will load the file at
-`/home/marco/foo.js`.
+当核心模块的标识被传递给 `require()` 时，核心模块总是优先被加载。例如，`require('http')`总是返回内置的HTTP核心模块，即使存在一个同样名为 `http` 的文件（模块）。
 
-A module prefixed with `'./'` is relative to the file calling `require()`.
-That is, `circle.js` must be in the same directory as `foo.js` for
-`require('./circle')` to find it.
-
-Without a leading '/' or './' to indicate a file, the module is either a
-"core module" or is loaded from a `node_modules` folder.
-
-If the given path does not exist, `require()` will throw an Error with its
-`code` property set to `'MODULE_NOT_FOUND'`.
-
-## Loading from `node_modules` Folders
+## File Modules 文件模块
 
 <!--type=misc-->
 
-If the module identifier passed to `require()` is not a native module,
-and does not begin with `'/'`, `'../'`, or `'./'`, then node starts at the
-parent directory of the current module, and adds `/node_modules`, and
-attempts to load the module from that location.
+如果按文件名精确查找未找到文件，Node会试图在文件名之后添加 `.js` 后缀来加载。如还未找到，则添加 `.json` 加载，最后还会尝试添加 `.node` 后缀加载。
 
-If it is not found there, then it moves to the parent directory, and so
-on, until the root of the file system is reached.
+`.js` 文件按照 Javascript 文件解释，`.json` 文件被解析为 JSON 文本文件。`.node.` 文件被解释为已由 `dlopen` 加载了的编译过的插件模块。
 
-For example, if the file at `'/home/ry/projects/foo.js'` called
-`require('bar.js')`, then node would look in the following locations, in
-this order:
+如果一个模块（名）由 `'/'` 前缀开头，表示这是一个（模块）文件的绝对路径。例如，`require('/home/marco/foo.js')` 将会加载在 `/home/marco/` 目录下的 `foo.js` 文件。
+
+如果一个模块（名）由 `'./'` 前缀开头，表示这是一个（模块）文件的相对路径，相对于调用 `require()` 的模块文件所在路径。也就是说，如果在 `foo.js` 中调用 `require('./circle')` 时，`circle.js` 必须与它在同一个目录中才能找到。
+
+如果（模块）文件描述中没有 `'/'` 或 `'./'` 开头，该模块要不就是一个“核心模块”或者是从 `node_modules` 文件夹中被加载。
+
+如果传入的文件路径不存在，`require()` 会抛出一个Error异常，并且该异常的 `code` 属性被设为 `'MODULE_NOT_FOUND'`。
+
+## Loading from `node_modules` Folders 从 `node_modules` 文件夹加载
+
+<!--type=misc-->
+
+如果一个传入 `require()` 的模块标识不是一个本地的模块，也不是以 `'/'`、 `'../'`，或 `'./'` 开头。那么Node会在当前模块的父目录（路径标识），加上 `/node_modules`（路径标识），然后尝试从该位置加载模块。
+
+如果模块未找到，那么Node继续尝试再上一层目录中的 `/node_modules` 文件夹中寻找模块加载，直至文件系统的根目录。
+
+例如，如果模块文件为 `'/home/ry/projects/foo.js'` 调用 `require('bar.js')`，那么Node会按照这样的顺序在如下位置进行查找：
 
 * `/home/ry/projects/node_modules/bar.js`
 * `/home/ry/node_modules/bar.js`
 * `/home/node_modules/bar.js`
 * `/node_modules/bar.js`
 
-This allows programs to localize their dependencies, so that they do not
-clash.
+这样允许程序将它们依赖集中起来，以免发生冲突。
 
-You can require specific files or sub modules distributed with a module by
-including a path suffix after the module name. For instance
-`require('example-module/path/to/file')` would resolve `path/to/file`
-relative to where `example-module` is located. The suffixed path follows the
-same module resolution semantics.
+可以通过在模块名之后添加路径标识后缀来加载（require）特定的文件或分布式的子模块。例如 `require('example-module/path/to/file')` 会被解析为 `path/to/file` 路径对应 `example-module` 模块所在的位置。该后缀路径标识同样遵循之前模块解析加载的语法。
 
-## Folders as Modules
+## Folders as Modules 模块文件夹
 
 <!--type=misc-->
 
-It is convenient to organize programs and libraries into self-contained
-directories, and then provide a single entry point to that library.
-There are three ways in which a folder may be passed to `require()` as
-an argument.
+可以很方便地将程序和库放入独立的文件夹中，并提供单一的入口来指向它。有三种方法可以使用一个文件夹（路径标识）作为传入 `require()` 的参数。
 
-The first is to create a `package.json` file in the root of the folder,
-which specifies a `main` module.  An example package.json file might
-look like this:
+第一个方法是在该文件夹的根目录中创建一个 `package.json` 文件，它指定了一个 `main` 模块。例如，一个 `package.json` 可能看起来像这样：
 
     { "name" : "some-library",
       "main" : "./lib/some-library.js" }
 
-If this was in a folder at `./some-library`, then
-`require('./some-library')` would attempt to load
-`./some-library/lib/some-library.js`.
+如果该文件在目录 `./some-library` 中，那么 `require('./some-library')` 会试图加载 `./some-library/lib/some-library.js`。
 
-This is the extent of Node's awareness of package.json files.
+有关 Node 加载 `package.json` 文件，你还需要知道以下这些。
 
-If there is no package.json file present in the directory, then node
-will attempt to load an `index.js` or `index.node` file out of that
-directory.  For example, if there was no package.json file in the above
-example, then `require('./some-library')` would attempt to load:
+如果在目录中没有发现 `package.json` 文件，那么 Node 会试图从该目录中加载 `index.js` 或 `index.node` 文件。例如，如果在上面这个例子中没有 `package.json` 文件，那么 `require('./some-library')` 会试图加载：
 
 * `./some-library/index.js`
 * `./some-library/index.node`
 
-## Caching
+## Caching 缓存
 
 <!--type=misc-->
 
-Modules are cached after the first time they are loaded.  This means
-(among other things) that every call to `require('foo')` will get
-exactly the same object returned, if it would resolve to the same file.
+模块在第一次被加载之后被缓存。这意味着（除此以外）每一次调用 `require('foo')` 其实会返回同一个对象，如果每次都是解析同一个文件的话。
 
-Multiple calls to `require('foo')` may not cause the module code to be
-executed multiple times.  This is an important feature.  With it,
-"partially done" objects can be returned, thus allowing transitive
-dependencies to be loaded even when they would cause cycles.
+多次调用 `require('foo')` 不会让模块代码被执行多次。这是一个重要的特性。利用它可以使“部分完成”的对象被返回，因此才允许传递依赖被加载，即使它们会导致循环依赖。
 
-If you want to have a module execute code multiple times, then export a
-function, and call that function.
+如果你需要让一个模块执行多次代码，那么输出一个函数，然后调用该函数来实现。
 
-### Module Caching Caveats
+### Module Caching Caveats 模块缓存警告
 
 <!--type=misc-->
 
-Modules are cached based on their resolved filename.  Since modules may
-resolve to a different filename based on the location of the calling
-module (loading from `node_modules` folders), it is not a *guarantee*
-that `require('foo')` will always return the exact same object, if it
-would resolve to different files.
+模块是基于解析它们的文件路径标识来缓存的。由于模块因调用它们的模块所在位置不同，可能被解析为不同的文件路径标识（从 `node_modules` 文件夹中被加载）。因此如果解析到不同文件是，就不能*保证* `require('foo')` 总是会返回绝对相同的对象。
 
-## The `module` Object
+## The `module` Object `'module'` 对象
 
 <!-- type=var -->
 <!-- name=module -->
 
 * {Object}
 
-In each module, the `module` free variable is a reference to the object
-representing the current module.  For convenience, `module.exports` is
-also accessible via the `exports` module-global. `module` isn't actually
-a global but rather local to each module.
+在每个模块内，免定义变量 `module` 是一个对代表当前模块对象的引用。为了方便，`module.exports` 也可以通过模块全局变量 `exports` 访问到。`module` 实际上并不是一个全局变量，而是每个模块的本地变量。
 
 ### module.exports
 
@@ -250,6 +197,8 @@ acceptable; many want their module to be an instance of some class. To do this,
 assign the desired export object to `module.exports`. Note that assigning the
 desired object to `exports` will simply rebind the local `exports` variable,
 which is probably not what you want to do.
+
+`module.exports` 对象是由模块系统创建的。但有时这难以接受的，许多人希望它们的模块是某个类的实例。为了做到这一点，将希望
 
 For example suppose we were making a module called `a.js`
 
