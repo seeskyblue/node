@@ -398,4 +398,4 @@ Node的 `require()` 函数语法被设计得足够通用，以便支持各种健
 
 此外，为使模块查找过程更加优化，相比于把包直接放在 `/usr/lib/node` 目录，我们可以把他们放到 `/usr/lib/node_modules/<name>/<version>`。这样可以不用麻烦 Node 再去 `/usr/node_modules` 或 `/node_modules` 查找未找到的依赖。
 
-为了使模块能够在 Node 的 REPL（即时结果输出）环境中被访问，将 `/usr/lib/node_modules` 文件夹添加到 `$NODE_PATH` 环境变量中会很有用。由于模块使用 `node_modules` 文件夹查找都是基于调用 `require()` 文件绝对路径的相对路径，而包文件本身可能再任何地方。
+为了使模块能够在 Node 的 REPL（命令行交互）环境中被访问，将 `/usr/lib/node_modules` 文件夹添加到 `$NODE_PATH` 环境变量中会很有用。由于模块使用 `node_modules` 文件夹查找都是基于调用 `require()` 文件绝对路径的相对路径，而包文件本身可能再任何地方。

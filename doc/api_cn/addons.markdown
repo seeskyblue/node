@@ -1,42 +1,26 @@
-# Addons
+# Addons 插件
 
-Addons are dynamically linked shared objects. They can provide glue to C and
-C++ libraries. The API (at the moment) is rather complex, involving
-knowledge of several libraries:
+插件是动态链接并共享的对象。他们可以提供 C 和 C++ 库的访问支持。该API（现在）相当复杂，包括多个库的知识：
 
- - V8 JavaScript, a C++ library. Used for interfacing with JavaScript:
-   creating objects, calling functions, etc.  Documented mostly in the
-   `v8.h` header file (`deps/v8/include/v8.h` in the Node source
-   tree), which is also available
-   [online](http://izs.me/v8-docs/main.html).
+ - V8 JavaScript, C++库。用来作为处理JavaScript的接口，包括：创建对象，调用函数等。文档大多数在 `v8.h` 头文件中（在 Node 源代码中的 `deps/v8/include/v8.h`），也可以 [在线](http://izs.me/v8-docs/main.html) 获取。
 
- - [libuv](https://github.com/joyent/libuv), C event loop library.
-   Anytime one needs to wait for a file descriptor to become readable,
-   wait for a timer, or wait for a signal to be received one will need
-   to interface with libuv. That is, if you perform any I/O, libuv will
-   need to be used.
+ - [libuv](https://github.com/joyent/libuv), C语言事件循环库。任何时候，当需要等待定时器或者等待收到一个信号，让一个文件描述符变为可读的时候就需要 libuv 接口。也就是说，如果你打算执行任何 I/O 操作的时候，libuv 就需要被用到。
 
- - Internal Node libraries. Most importantly is the `node::ObjectWrap`
-   class which you will likely want to derive from.
+ - 内部 Node 库。最重要的是 `node::ObjectWrap` 类，你很可能会想要获得。
 
- - Others. Look in `deps/` for what else is available.
+ - 其他的，查看 `deps/` 来获取其他有用信息。
 
-Node statically compiles all its dependencies into the executable.
-When compiling your module, you don't need to worry about linking to
-any of these libraries.
+Node 静态编译所有他的依赖为可执行的（库）。当编译你的模块时，不需要担心任何对这些库的引用。
 
-All of the following examples are available for
-[download](https://github.com/rvagg/node-addon-examples) and may be
-used as a starting-point for your own Addon.
+所有接下来的例子可以通过点击 [这里](https://github.com/rvagg/node-addon-examples) 下载，也许可以作为（创建）你自己插件的一个起点。
 
 ## Hello world
 
-To get started let's make a small Addon which is the C++ equivalent of
-the following JavaScript code:
+开始，让我们制作一个 C++ 小插件，等价于以下 JavaScript 代码：
 
     module.exports.hello = function() { return 'world'; };
 
-First we create a file `hello.cc`:
+首先，我们创建一个 `hello.cc` 文件：
 
     // hello.cc
     #include <node.h>
@@ -55,21 +39,16 @@ First we create a file `hello.cc`:
 
     NODE_MODULE(addon, init)
 
-Note that all Node addons must export an initialization function:
+注意，所有的 Node 插件必须输出一个初始化（initialization）函数：
 
     void Initialize (Handle<Object> exports);
     NODE_MODULE(module_name, Initialize)
 
-There is no semi-colon after `NODE_MODULE` as it's not a function (see
-`node.h`).
+在 `NODE_MODULE` 之后没有分号，因为他不是一个函数（参见 `node.h`）。
 
-The `module_name` needs to match the filename of the final binary (minus the
-.node suffix).
+`module_name` 需要符合最终便以为二进制文件的文件名（去除了 `.node` 后缀）。 
 
-The source code needs to be built into `addon.node`, the binary Addon. To
-do this we create a file called `binding.gyp` which describes the configuration
-to build your module in a JSON-like format. This file gets compiled by
-[node-gyp](https://github.com/TooTallNate/node-gyp).
+源代码需要被做成 `addon.node`，二进制的插件。为了这么做，我们需要创建一个 `binding.gyp` 文件，他使用类似JSON的格式来描述创建你的模块的配置信息。该文件通过 [node-gyp](https://github.com/TooTallNate/node-gyp) 来编译。
 
     {
       "targets": [
@@ -80,26 +59,20 @@ to build your module in a JSON-like format. This file gets compiled by
       ]
     }
 
-The next step is to generate the appropriate project build files for the
-current platform. Use `node-gyp configure` for that.
+下一步就是生成合适的项目来为当前平台创建文件。可以使用 `node-gyp configure`。
 
-Now you will have either a `Makefile` (on Unix platforms) or a `vcxproj` file
-(on Windows) in the `build/` directory. Next invoke the `node-gyp build`
-command.
+现在，你可以在 `build/` 目录中使用 `Makefile`（在Unix平台）或者 `vcxproj`（在Windows平台）来创建文件。之后调用 `node-gyp build` 命令。
 
-Now you have your compiled `.node` bindings file! The compiled bindings end up
-in `build/Release/`.
+现在，你有了编译过的 `.node` 绑定文件了！最终编译过的绑定文件会在 `build/Release/` 目录中。
 
-You can now use the binary addon in a Node project `hello.js` by pointing
-`require` to the recently built `hello.node` module:
+你现在可以在 Node 项目中的 `hello.js` 文件中，通过告诉 `require` 最新创建的 `hello.node` 模块，来使用二进制的插件：
 
     // hello.js
     var addon = require('./build/Release/addon');
 
     console.log(addon.hello()); // 'world'
 
-Please see patterns below for further information or
-<https://github.com/arturadib/node-qt> for an example in production.
+请在接下来的文档中提供更多模式供参考，也可以访问 <https://github.com/arturadib/node-qt> 获取更多产品案例。
 
 
 ## Addon patterns
