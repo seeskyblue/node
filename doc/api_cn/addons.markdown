@@ -72,19 +72,14 @@ Node 静态编译所有他的依赖为可执行的（库）。当编译你的模
 
     console.log(addon.hello()); // 'world'
 
-请在接下来的文档中提供更多模式供参考，也可以访问 <https://github.com/arturadib/node-qt> 获取更多产品案例。
+在接下来的文档中提供更多有关插件（设计）模式参考，也可以访问 <https://github.com/arturadib/node-qt> 获取更多产品案例。
 
 
-## Addon patterns
+## Addon patterns 插件模式
 
-Below are some addon patterns to help you get started. Consult the online
-[v8 reference](http://izs.me/v8-docs/main.html) for help with the various v8
-calls, and v8's [Embedder's Guide](http://code.google.com/apis/v8/embed.html)
-for an explanation of several concepts used such as handles, scopes,
-function templates, etc.
+以下是一些插件（设计）模式，以帮助你起步。可以查询在线 [V8 参考](http://izs.me/v8-docs/main.html) 获取有关各种 V8 的调用。也可以参考 V8 的 [内置手册](http://code.google.com/apis/v8/embed.html) 的说明来了解它所使用的一些概念，例如句柄（handles）、范围（scopes）、函数模板（function templates）等。
 
-In order to use these examples you need to compile them using `node-gyp`.
-Create the following `binding.gyp` file:
+想要运行这些示例，你需要使用 `node-gyp` 编译它们。创建如下的 `binding.gyp` 文件：
 
     {
       "targets": [
@@ -95,22 +90,18 @@ Create the following `binding.gyp` file:
       ]
     }
 
-In cases where there is more than one `.cc` file, simply add the file name to
-the `sources` array, e.g.:
+当有多个 `.cc` 文件的时候，只需要简单的把文件名添加到 `sources` 数组中，例如：
 
     "sources": ["addon.cc", "myexample.cc"]
 
-Now that you have your `binding.gyp` ready, you can configure and build the
-addon:
+现在，你已经准备好 `binding.gyp` 文件了，可以设置和创建该插件：
 
     $ node-gyp configure build
 
 
-### Function arguments
+### Function arguments 函数参数
 
-The following pattern illustrates how to read arguments from JavaScript
-function calls and return a result. This is the main and only needed source
-`addon.cc`:
+接下来的（设计）模式展现了如何从 JavaScript 的函数调用中读取参数并返回一个结果。这是主要的并且也是唯一需要的 `addon.cc` 代码：
 
     // addon.cc
     #include <node.h>
@@ -145,7 +136,7 @@ function calls and return a result. This is the main and only needed source
 
     NODE_MODULE(addon, Init)
 
-You can test it with the following JavaScript snippet:
+你可以使用以下 JavaScript 片段来测试：
 
     // test.js
     var addon = require('./build/Release/addon');
@@ -153,10 +144,9 @@ You can test it with the following JavaScript snippet:
     console.log( 'This should be eight:', addon.add(3,5) );
 
 
-### Callbacks
+### Callbacks 回调
 
-You can pass JavaScript functions to a C++ function and execute them from
-there. Here's `addon.cc`:
+你可以将 JavaScript 函数传递给 C++ 函数并且执行它，以下是 `addon.cc` 代码：
 
     // addon.cc
     #include <node.h>
