@@ -192,15 +192,9 @@ Node有几个模块是被编译为二进制的（核心模块）。这些模块�
 
 * {Object}
 
-The `module.exports` object is created by the Module system. Sometimes this is not
-acceptable; many want their module to be an instance of some class. To do this,
-assign the desired export object to `module.exports`. Note that assigning the
-desired object to `exports` will simply rebind the local `exports` variable,
-which is probably not what you want to do.
+`module.exports` 对象是由模块系统创建的。但有时这难以接受的，许多人希望它们的模块是某个类的实例。为了做到这点，可将希望得到的模块输出对象赋值给 `module.exports`。注意，将希望得到的模块对象赋值给 `exports` 只是简单地重新定义了本地的 `exports` 变量，可能并不是你想要的那样。 
 
-`module.exports` 对象是由模块系统创建的。但有时这难以接受的，许多人希望它们的模块是某个类的实例。为了做到这一点，将希望
-
-For example suppose we were making a module called `a.js`
+例如，假设我们在编写一个模块叫做 `a.js`：
 
     var EventEmitter = require('events').EventEmitter;
 
@@ -212,16 +206,14 @@ For example suppose we were making a module called `a.js`
       module.exports.emit('ready');
     }, 1000);
 
-Then in another file we could do
+然后，在一个别的模块文件中，我们可以这么做：
 
     var a = require('./a');
     a.on('ready', function() {
       console.log('module a is ready');
     });
 
-
-Note that assignment to `module.exports` must be done immediately. It cannot be
-done in any callbacks.  This does not work:
+注意，赋值给 `module.exports` 是必须立即执行完成的。不能放在任何回调函数中。如下这样是不会有效工作的：
 
 x.js:
 
@@ -234,14 +226,11 @@ y.js:
     var x = require('./x');
     console.log(x.a);
 
-#### exports alias
+#### exports alias 输出（exports）别名
 
-The `exports` variable that is available within a module starts as a reference
-to `module.exports`. As with any variable, if you assign a new value to it, it
-is no longer bound to the previous value.
+`exports` 变量在模块开始（执行）时，作为 `module.exports` 的引用可以获取到。与其他变量一样，如果你给他赋一个新的值之后，他再也不会绑定之前的值。
 
-To illustrate the behaviour, imagine this hypothetical implementation of
-`require()`:
+为了说明这个行为，想象以下是 `require()` 假想的实现：
 
     function require(...) {
       // ...
@@ -254,70 +243,61 @@ To illustrate the behaviour, imagine this hypothetical implementation of
       return module;
     }
 
-As a guideline, if the relationship between `exports` and `module.exports`
-seems like magic to you, ignore `exports` and only use `module.exports`.
+原则上，如果 `exports` 和 `module.exports` 之间的关系对你来说太不确定，可以忽略 `exports` 而仅使用 `module.exports`。
 
 ### module.require(id)
 
 * `id` {String}
-* Return: {Object} `module.exports` from the resolved module
+* Return: {Object} 从已解析的模块返回的 `module.exports`
 
-The `module.require` method provides a way to load a module as if
-`require()` was called from the original module.
+`module.require` 方法提供了一种加载模块的途径，犹如从源模块调用 `require()` 一般。
 
-Note that in order to do this, you must get a reference to the `module`
-object.  Since `require()` returns the `module.exports`, and the `module` is
-typically *only* available within a specific module's code, it must be
-explicitly exported in order to be used.
+注意，为了这样操作，你必须先获得一个 `module` 对象的引用。由于 `require()` 返回的是 `module.exports`，并且 `module` 通常情况下 *只能* 在特定模块代码的内部获得。所以 `module` 对象必须被准确地输出，才能被使用。
 
 
 ### module.id
 
 * {String}
 
-The identifier for the module.  Typically this is the fully resolved
-filename.
+模块的标识，通常是已完整解析后的文件路径（filename）。
 
 
 ### module.filename
 
 * {String}
 
-The fully resolved filename to the module.
+模块完整解析后的文件路径。
 
 
 ### module.loaded
 
 * {Boolean}
 
-Whether or not the module is done loading, or is in the process of
-loading.
+是否模块已经完成加载，或者仍在加载过程中。
 
 
 ### module.parent
 
 * {Module Object}
 
-The module that required this one.
+调用加载（require）本模块的模块对象。
 
 
 ### module.children
 
 * {Array}
 
-The module objects required by this one.
+本模块调用加载（require）的模块对象。
 
 
 
-## All Together...
+## All Together... 综述...
 
 <!-- type=misc -->
 
-To get the exact filename that will be loaded when `require()` is called, use
-the `require.resolve()` function.
+`require.resolve()` 函数可以获取调用 `require()` 时将会被加载的准确文件路径。
 
-Putting together all of the above, here is the high-level algorithm
-in pseudocode of what require.resolve does:
+综上所述，以下是 `require.resolve()` 执行时高阶算法的伪代码：
 
     require(X) from module at path Y
     1. If X is a core module,
@@ -361,7 +341,7 @@ in pseudocode of what require.resolve does:
        c. let I = I - 1
     5. return DIRS
 
-## Loading from the global folders
+## Loading from the global folders 从全局文件夹中加载
 
 <!-- type=misc -->
 
@@ -369,87 +349,53 @@ If the `NODE_PATH` environment variable is set to a colon-delimited list
 of absolute paths, then node will search those paths for modules if they
 are not found elsewhere.  (Note: On Windows, `NODE_PATH` is delimited by
 semicolons instead of colons.)
+如果环境变量 `NODE_PATH` 被设置为冒号分割的绝对路径列表，那么 Node 如果在其他地方都找不到模块，就会搜索这些路径来加载模块。（注意，在Windows系统中，`NODE_PATH` 是被分号分割，而不是冒号分割。）
 
-Additionally, node will search in the following locations:
+另外，Node 也会搜索如下位置：
 
 * 1: `$HOME/.node_modules`
 * 2: `$HOME/.node_libraries`
 * 3: `$PREFIX/lib/node`
 
-Where `$HOME` is the user's home directory, and `$PREFIX` is node's
-configured `node_prefix`.
+其中，`$HOME` 是用户的 home 目录，`$PREFIX` 是由 Node 的配置的 `node_prefix`。
 
-These are mostly for historic reasons.  You are highly encouraged to
-place your dependencies locally in `node_modules` folders.  They will be
-loaded faster, and more reliably.
+这些大多是由于历史的原因。强烈建议把依赖模块放在程序本地的 `node_modules` 文件夹中。这样可以被更快的加载，并且也更可靠。
 
-## Accessing the main module
+## Accessing the main module 访问主模块
 
 <!-- type=misc -->
 
-When a file is run directly from Node, `require.main` is set to its
-`module`. That means that you can determine whether a file has been run
-directly by testing
+当一个文件被 Node 直接执行，`require.main` 被设为它自己的 `module`。这意味着可以通过以下测试确定文件是否被直接运行：
 
     require.main === module
 
-For a file `foo.js`, this will be `true` if run via `node foo.js`, but
-`false` if run by `require('./foo')`.
+对于 `foo.js`文件，如果通过运行 `node foo.js` 将会返回 `true`，但通过运行 `require('./foo')` 会返回 `false`。
 
-Because `module` provides a `filename` property (normally equivalent to
-`__filename`), the entry point of the current application can be obtained
-by checking `require.main.filename`.
+由于 `module` 提供 `filename` 属性（一般等于 `__filename`），当前程序的入口可以通过 `require.main.filename` 获取到。
 
-## Addenda: Package Manager Tips
+## Addenda: Package Manager Tips 附录：包管理技巧
 
 <!-- type=misc -->
 
-The semantics of Node's `require()` function were designed to be general
-enough to support a number of sane directory structures. Package manager
-programs such as `dpkg`, `rpm`, and `npm` will hopefully find it possible to
-build native packages from Node modules without modification.
+Node的 `require()` 函数语法被设计得足够通用，以便支持各种健全的目录结构。包管理器如 `dpkg`、`rpm` 和 `npm`等但愿可以无需修改 Node 模块就能创建本地包。
 
-Below we give a suggested directory structure that could work:
+以下，我们给出一个目录结构建议可以满足以上要求：
 
-Let's say that we wanted to have the folder at
-`/usr/lib/node/<some-package>/<some-version>` hold the contents of a
-specific version of a package.
+让我们假设要让 `/usr/lib/node/<some-package>/<some-version>` 文件夹包含一个特定版本包的内容。 
 
-Packages can depend on one another. In order to install package `foo`, you
-may have to install a specific version of package `bar`.  The `bar` package
-may itself have dependencies, and in some cases, these dependencies may even
-collide or form cycles.
+包可以依赖另一个包。为了按照 `foo` 包，你可能需要按照一个特定版本的 `bar` 包。但 `bar` 包可能自己也有依赖，并且在某些情况下，这些依赖可以相互不兼容，甚至是循环依赖。
 
-Since Node looks up the `realpath` of any modules it loads (that is,
-resolves symlinks), and then looks for their dependencies in the
-`node_modules` folders as described above, this situation is very simple to
-resolve with the following architecture:
+由于 Node 查找任何模块的 `realpath`（绝对路径），然后按之前描述在 `node_modules` 文件夹中查找他们的依赖，这种情况按照如下结构会非常容易去处理：
 
-* `/usr/lib/node/foo/1.2.3/` - Contents of the `foo` package, version 1.2.3.
-* `/usr/lib/node/bar/4.3.2/` - Contents of the `bar` package that `foo`
-  depends on.
-* `/usr/lib/node/foo/1.2.3/node_modules/bar` - Symbolic link to
-  `/usr/lib/node/bar/4.3.2/`.
-* `/usr/lib/node/bar/4.3.2/node_modules/*` - Symbolic links to the packages
-  that `bar` depends on.
+* `/usr/lib/node/foo/1.2.3/` - `foo` 包的内容, 版本为 1.2.3。
+* `/usr/lib/node/bar/4.3.2/` - `bar` 包的内容，被 `foo` 包依赖。
+* `/usr/lib/node/foo/1.2.3/node_modules/bar` - 到 `/usr/lib/node/bar/4.3.2/` 的符号链接。
+* `/usr/lib/node/bar/4.3.2/node_modules/*` - `bar` 依赖包的符号链接。
 
-Thus, even if a cycle is encountered, or if there are dependency
-conflicts, every module will be able to get a version of its dependency
-that it can use.
+因此，即使遇到循环依赖，或者有依赖冲突，每个模块都可以获得它可以使用版本的依赖。
 
-When the code in the `foo` package does `require('bar')`, it will get the
-version that is symlinked into `/usr/lib/node/foo/1.2.3/node_modules/bar`.
-Then, when the code in the `bar` package calls `require('quux')`, it'll get
-the version that is symlinked into
-`/usr/lib/node/bar/4.3.2/node_modules/quux`.
+当 `foo` 包中的代码执行 `foo`，会得到符号链接到 `/usr/lib/node/foo/1.2.3/node_modules/bar` 的版本。而当 `bar` 包中的代码调用 `require('quux')`，会得到符号链接到 `/usr/lib/node/bar/4.3.2/node_modules/quux` 的版本。
 
-Furthermore, to make the module lookup process even more optimal, rather
-than putting packages directly in `/usr/lib/node`, we could put them in
-`/usr/lib/node_modules/<name>/<version>`.  Then node will not bother
-looking for missing dependencies in `/usr/node_modules` or `/node_modules`.
+此外，为使模块查找过程更加优化，相比于把包直接放在 `/usr/lib/node` 目录，我们可以把他们放到 `/usr/lib/node_modules/<name>/<version>`。这样可以不用麻烦 Node 再去 `/usr/node_modules` 或 `/node_modules` 查找未找到的依赖。
 
-In order to make modules available to the node REPL, it might be useful to
-also add the `/usr/lib/node_modules` folder to the `$NODE_PATH` environment
-variable.  Since the module lookups using `node_modules` folders are all
-relative, and based on the real path of the files making the calls to
-`require()`, the packages themselves can be anywhere.
+为了使模块能够在 Node 的 REPL（即时结果输出）环境中被访问，将 `/usr/lib/node_modules` 文件夹添加到 `$NODE_PATH` 环境变量中会很有用。由于模块使用 `node_modules` 文件夹查找都是基于调用 `require()` 文件绝对路径的相对路径，而包文件本身可能再任何地方。
