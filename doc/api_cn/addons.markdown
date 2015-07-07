@@ -136,7 +136,7 @@ Node 静态编译所有他的依赖为可执行的（库）。当编译你的模
 
     NODE_MODULE(addon, Init)
 
-你可以使用以下 JavaScript 片段来测试：
+可以执行以下 JavaScript 片段测试：
 
     // test.js
     var addon = require('./build/Release/addon');
@@ -169,12 +169,9 @@ Node 静态编译所有他的依赖为可执行的（库）。当编译你的模
 
     NODE_MODULE(addon, Init)
 
-Note that this example uses a two-argument form of `Init()` that receives
-the full `module` object as the second argument. This allows the addon
-to completely overwrite `exports` with a single function instead of
-adding the function as a property of `exports`.
+注意，在这个例子中的 `Init()` 函数有两个参数，第二个参数接收完整的 `module` 对象。这就允许插件使用单个函数完全覆盖 `exports`，而不是将函数作为 `exports` 的属性。
 
-To test it run the following JavaScript snippet:
+可以执行以下 JavaScript 片段测试：
 
     // test.js
     var addon = require('./build/Release/addon');
@@ -184,11 +181,9 @@ To test it run the following JavaScript snippet:
     });
 
 
-### Object factory
+### Object factory 对象工厂
 
-You can create and return new objects from within a C++ function with this
-`addon.cc` pattern, which returns an object with property `msg` that echoes
-the string passed to `createObject()`:
+可以参考 `addon.cc` 的（设计）模式，在 C++ 函数中创建并返回新的对象。`addon.cc` 中返回一个拥有 `msg` 属性的对象，反映了传递给 `createObject()` 的字符串：
 
     // addon.cc
     #include <node.h>
@@ -211,7 +206,7 @@ the string passed to `createObject()`:
 
     NODE_MODULE(addon, Init)
 
-To test it in JavaScript:
+通过以下 JavaScript 代码测试：
 
     // test.js
     var addon = require('./build/Release/addon');
@@ -221,10 +216,9 @@ To test it in JavaScript:
     console.log(obj1.msg+' '+obj2.msg); // 'hello world'
 
 
-### Function factory
+### Function factory 函数工厂
 
-This pattern illustrates how to create and return a JavaScript function that
-wraps a C++ function:
+该（设计）模式展示了如何在 C++ 函数中创建并返回一个 JavaScript 函数：
 
     // addon.cc
     #include <node.h>
@@ -256,7 +250,7 @@ wraps a C++ function:
 
     NODE_MODULE(addon, Init)
 
-To test:
+测试：
 
     // test.js
     var addon = require('./build/Release/addon');
@@ -265,11 +259,11 @@ To test:
     console.log(fn()); // 'hello world'
 
 
-### Wrapping C++ objects
+### Wrapping C++ objects 封装 C++ 对象
 
-Here we will create a wrapper for a C++ object/class `MyObject` that can be
-instantiated in JavaScript through the `new` operator. First prepare the main
-module `addon.cc`:
+这里我们将创建一个 C++ 对象/类 `MyObject` 的封装，可以在 JavaScript中通过 `new` 操作实例化。
+
+首先创建主模块 `addon.cc`：
 
     // addon.cc
     #include <node.h>
@@ -283,7 +277,7 @@ module `addon.cc`:
 
     NODE_MODULE(addon, InitAll)
 
-Then in `myobject.h` make your wrapper inherit from `node::ObjectWrap`:
+然后在 `myobject.h` 中，使封装对象/类继承于 `node::ObjectWrap`：
 
     // myobject.h
     #ifndef MYOBJECT_H
@@ -308,9 +302,7 @@ Then in `myobject.h` make your wrapper inherit from `node::ObjectWrap`:
 
     #endif
 
-And in `myobject.cc` implement the various methods that you want to expose.
-Here we expose the method `plusOne` by adding it to the constructor's
-prototype:
+然后在 `myobject.cc` 中实现你需要暴露的变量方法。这里，我们暴露 `plusOne` 方法，通过将它添加到构造器的原型：
 
     // myobject.cc
     #include "myobject.h"
@@ -370,7 +362,7 @@ prototype:
       args.GetReturnValue().Set(Number::New(isolate, obj->value_));
     }
 
-Test it with:
+测试：
 
     // test.js
     var addon = require('./build/Release/addon');
@@ -380,16 +372,15 @@ Test it with:
     console.log( obj.plusOne() ); // 12
     console.log( obj.plusOne() ); // 13
 
-### Factory of wrapped objects
+### Factory of wrapped objects 封装对象工厂
 
-This is useful when you want to be able to create native objects without
-explicitly instantiating them with the `new` operator in JavaScript, e.g.
+当你想要创建本地对象，但不想在 JavaScript 中显式地通过 `new` 操作来实例化它们，那么这就会变得有用。比如：
 
     var obj = addon.createObject();
     // instead of:
     // var obj = new addon.Object();
 
-Let's register our `createObject` method in `addon.cc`:
+让我们在 `addon.cc` 中添加 `createObject` 方法：
 
     // addon.cc
     #include <node.h>
@@ -411,8 +402,7 @@ Let's register our `createObject` method in `addon.cc`:
 
     NODE_MODULE(addon, InitAll)
 
-In `myobject.h` we now introduce the static method `NewInstance` that takes
-care of instantiating the object (i.e. it does the job of `new` in JavaScript):
+在 `myobject.h` 文件中，我们让静态方法 `NewInstance` 来实例化对象（即，相当于 JavaScript 中 `new` 的工作）：
 
     // myobject.h
     #ifndef MYOBJECT_H
@@ -438,7 +428,7 @@ care of instantiating the object (i.e. it does the job of `new` in JavaScript):
 
     #endif
 
-The implementation is similar to the above in `myobject.cc`:
+实现有点类似上面，在 `myobject.cc` 中：
 
     // myobject.cc
     #include <node.h>
@@ -508,7 +498,7 @@ The implementation is similar to the above in `myobject.cc`:
       args.GetReturnValue().Set(Number::New(isolate, obj->value_));
     }
 
-Test it with:
+测试:
 
     // test.js
     var createObject = require('./build/Release/addon');
@@ -530,6 +520,8 @@ In addition to wrapping and returning C++ objects, you can pass them around
 by unwrapping them with Node's `node::ObjectWrap::Unwrap` helper function.
 In the following `addon.cc` we introduce a function `add()` that can take on two
 `MyObject` objects:
+
+除了封装和返回 C++ 对象，也可以通过
 
     // addon.cc
     #include <node.h>
