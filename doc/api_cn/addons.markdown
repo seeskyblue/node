@@ -516,12 +516,7 @@ Node 静态编译所有他的依赖为可执行的（库）。当编译你的模
 
 ### Passing wrapped objects around
 
-In addition to wrapping and returning C++ objects, you can pass them around
-by unwrapping them with Node's `node::ObjectWrap::Unwrap` helper function.
-In the following `addon.cc` we introduce a function `add()` that can take on two
-`MyObject` objects:
-
-除了封装和返回 C++ 对象，也可以通过
+除了封装和返回 C++ 对象，也可以通过使用 Node 的 `node::ObjectWrap::Unwrap` 函数来解包后分发它们。在 `addon.cc` 中我们引入 `add()` 函数，它可以接受两个 `MyObject` 对象：
 
     // addon.cc
     #include <node.h>
@@ -558,8 +553,7 @@ In the following `addon.cc` we introduce a function `add()` that can take on two
 
     NODE_MODULE(addon, InitAll)
 
-To make things interesting we introduce a public method in `myobject.h` so we
-can probe private values after unwrapping the object:
+为了更有趣，我们在 `myobject.h` 中引入一个公共方法，这样我们就可以探测到解包后该对象的私有的值：
 
     // myobject.h
     #ifndef MYOBJECT_H
@@ -585,7 +579,7 @@ can probe private values after unwrapping the object:
 
     #endif
 
-The implementation of `myobject.cc` is similar as before:
+`myobject.cc` 的实现类似之前：
 
     // myobject.cc
     #include <node.h>
@@ -643,7 +637,7 @@ The implementation of `myobject.cc` is similar as before:
       args.GetReturnValue().Set(instance);
     }
 
-Test it with:
+测试：
 
     // test.js
     var addon = require('./build/Release/addon');
