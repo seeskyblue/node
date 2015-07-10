@@ -1,49 +1,35 @@
-# process
+# process 进程
 
 <!-- type=global -->
 
-The `process` object is a global object and can be accessed from anywhere.
-It is an instance of [EventEmitter][].
+`process` 对象是全局对象，可以在任何地方访问到。他是一个 [EventEmitter][] 的实例。
 
-## Exit Codes
+## Exit Codes 退出代码
 
-Node will normally exit with a `0` status code when no more async
-operations are pending.  The following status codes are used in other
-cases:
+Node 当没有其他等待的异步操作时，通常会返回退出状态代码 `0`。以下状态代码被用在其他情况：
 
-* `1` **Uncaught Fatal Exception** - There was an uncaught exception,
-  and it was not handled by a domain or an `uncaughtException` event
-  handler.
-* `2` - Unused (reserved by Bash for builtin misuse)
-* `3` **Internal JavaScript Parse Error** - The JavaScript source code
-  internal in Node's bootstrapping process caused a parse error.  This
-  is extremely rare, and generally can only happen during development
-  of Node itself.
-* `4` **Internal JavaScript Evaluation Failure** - The JavaScript
-  source code internal in Node's bootstrapping process failed to
-  return a function value when evaluated.  This is extremely rare, and
-  generally can only happen during development of Node itself.
-* `5` **Fatal Error** - There was a fatal unrecoverable error in V8.
-  Typically a message will be printed to stderr with the prefix `FATAL
-  ERROR`.
-* `6` **Non-function Internal Exception Handler** - There was an
-  uncaught exception, but the internal fatal exception handler
-  function was somehow set to a non-function, and could not be called.
-* `7` **Internal Exception Handler Run-Time Failure** - There was an
-  uncaught exception, and the internal fatal exception handler
-  function itself threw an error while attempting to handle it.  This
-  can happen, for example, if a `process.on('uncaughtException')` or
-  `domain.on('error')` handler throws an error.
-* `8` - Unused.  In previous versions of Node, exit code 8 sometimes
-  indicated an uncaught exception.
-* `9` - **Invalid Argument** - Either an unknown option was specified,
-  or an option requiring a value was provided without a value.
-* `10` **Internal JavaScript Run-Time Failure** - The JavaScript
-  source code internal in Node's bootstrapping process threw an error
-  when the bootstrapping function was called.  This is extremely rare,
-  and generally can only happen during development of Node itself.
-* `12` **Invalid Debug Argument** - The `--debug` and/or `--debug-brk`
-  options were set, but an invalid port number was chosen.
+* `1` **未捕获的致命异常** - 有一个未捕获的异常，并且没有被任何领域或者 `uncaughtException` 事件处理。
+
+* `2` - 未使用 -（为 Bash 保留的内置误用）。
+
+* `3` **内部 JavaScript 解析错误** - JavaScript 代码内部在 Node 引入过程中引起解析错误。这非常罕见，一般只会在开发 Node 自身的时候发生。
+
+* `4` **内部 JavaScript 执行失败** - JavaScript 代码内部在 Node 引入过程中无法返回一个函数值。这非常罕见，一般只会在开发 Node 自身的时候发生。
+
+* `5` **致命错误** - 在 V8 中有致命且无法恢复的错误。通常一个消息会被输出到标准错误输出，并带有 `FATAL ERROR` 前缀。
+
+* `6` **失效函数内部异常处理** - 有一个未捕获的异常，但是内部致命异常的处理函数不知为何失效，并且不能被调用。
+
+* `7` **内部异常处理运行时错误** - 有一个未捕获异常，并且内部致命异常处理函数在试图处理它时自己抛出了错误。这是有可能发生的，例如，当 `process.on('uncaughtException')` 或者 `domain.on('error')` 处理抛出一个错误。
+
+* `8` - 未使用 - 在 Node 之前的版本中，退出代码 8 有时描述为一个未捕获的异常。 
+
+* `9` - **无效参数** - 一个未知的选项被指定，或者选项需要的值未提供。
+
+* `10` **内部 JavaScript 运行时失败** - JavaScript 源代码内部在 Node 引入过程中当引入函数被调用时抛出错误。这非常罕见，一般只会在开发 Node 自身的时候发生。
+
+* `12` **无效调试参数** - `--debug` 和/或 `--debug-brk` 选项被设置，但是选用了无效的端口号。
+
 * `>128` **Signal Exits** - If Node receives a fatal signal such as
   `SIGKILL` or `SIGHUP`, then its exit code will be `128` plus the
   value of the signal code.  This is a standard Unix practice, since
