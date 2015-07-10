@@ -30,11 +30,7 @@ Node 当没有其他等待的异步操作时，通常会返回退出状态代码
 
 * `12` **无效调试参数** - `--debug` 和/或 `--debug-brk` 选项被设置，但是选用了无效的端口号。
 
-* `>128` **Signal Exits** - If Node receives a fatal signal such as
-  `SIGKILL` or `SIGHUP`, then its exit code will be `128` plus the
-  value of the signal code.  This is a standard Unix practice, since
-  exit codes are defined to be 7-bit integers, and signal exits set
-  the high-order bit, and then contain the value of the signal code.
+* `>128` **终止信号** - 当 Node 接收到终止信号，例如 `SIGKILL` 或 `SIGHUP`，那么退出状态代码将会是 `128` 加上该信号代码。这是一个标准 Unix 的实践，由于退出状态代码被设计为7位（二进制）的整数，而终止信号被设在高位，因此这样就能包含信号代码的值。
 
 ## Event: 'exit'
 
