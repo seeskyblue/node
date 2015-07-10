@@ -30,18 +30,13 @@ Node 当没有其他等待的异步操作时，通常会返回退出状态代码
 
 * `12` **无效调试参数** - `--debug` 和/或 `--debug-brk` 选项被设置，但是选用了无效的端口号。
 
-* `>128` **终止信号** - 当 Node 接收到终止信号，例如 `SIGKILL` 或 `SIGHUP`，那么退出状态代码将会是 `128` 加上该信号代码。这是一个标准 Unix 的实践，由于退出状态代码被设计为7位（二进制）的整数，而终止信号被设在高位，因此这样就能包含信号代码的值。
+* `>128` **信号退出** - 当 Node 接收到终止信号，例如 `SIGKILL` 或 `SIGHUP`，那么退出状态代码将会是 `128` 加上该信号代码。这是一个标准 Unix 的实践，由于退出状态代码被设计为7位（二进制）的整数，而终止信号被设在高位，因此这样就能包含信号代码的值。
 
-## Event: 'exit'
+## Event: 'exit' 事件：'exit'（退出）
 
-Emitted when the process is about to exit. There is no way to prevent the
-exiting of the event loop at this point, and once all `exit` listeners have
-finished running the process will exit. Therefore you **must** only perform
-**synchronous** operations in this handler. This is a good hook to perform
-checks on the module's state (like for unit tests). The callback takes one
-argument, the code the process is exiting with.
+当进程将要退出时被触发。在该事件中，无法阻止事件循环的退出。并且一旦所有的 `exit` 监听完成执行后，进程将退出。因此，在处理过程中 **必须** 只能执行 **同步** 操作。这是一个好的时机来执行模块状态的检查（例如单元测试）。该事件回调函数有一个参数，就是进程退出的代码。
 
-Example of listening for `exit`:
+监听 `exit` 事件的例子：
 
     process.on('exit', function(code) {
       // do *NOT* do this
@@ -52,24 +47,17 @@ Example of listening for `exit`:
     });
 
 
-## Event: 'beforeExit'
+## Event: 'beforeExit' 事件：'beforeExit'（退出之前）
 
-This event is emitted when node empties it's event loop and has nothing else to
-schedule. Normally, node exits when there is no work scheduled, but a listener
-for 'beforeExit' can make asynchronous calls, and cause node to continue.
+该事件在 Node 清空事件循环并且没有计划的事件时被触发。一般，Node 没有计划任务的时候便会退出。但是监听 'beforeExit' 事件可以产生异步调用，并可以让 Node 继续运行。
 
-'beforeExit' is not emitted for conditions causing explicit termination, such as
-`process.exit()` or uncaught exceptions, and should not be used as an
-alternative to the 'exit' event unless the intention is to schedule more work.
+当退出是由明确的终止引起时，比如 `process.exit()`，'beforeExit' 事件不会被触发。并且该事件不应该被用为 'exit' 事件的代替，除非想要计划更多的工作。
 
+## Event: 'uncaughtException' 事件：'uncaughtException'（未捕获异常）
 
-## Event: 'uncaughtException'
+当异常一路冒泡返回到事件循环的时候被触发。如果有该异常的监听被添加，默认行为（打印堆栈跟踪信息并退出）将不会发生。
 
-Emitted when an exception bubbles all the way back to the event loop. If a
-listener is added for this exception, the default action (which is to print
-a stack trace and exit) will not occur.
-
-Example of listening for `uncaughtException`:
+监听 `uncaughtException` 事件的例子：
 
     process.on('uncaughtException', function(err) {
       console.log('Caught exception: ' + err);
@@ -83,30 +71,24 @@ Example of listening for `uncaughtException`:
     nonexistentFunc();
     console.log('This will not run.');
 
-Note that `uncaughtException` is a very crude mechanism for exception
-handling.
+注意，`uncaughtException` 事件是一个非常原始的异常处理的机制。
 
-Don't use it, use [domains](domain.html) instead. If you do use it, restart
-your application after every unhandled exception!
+不要使用它，用 [domains](domain.html) 代替。如果你真的要使用它，每次遇到未处理异常之后要重启应用！
 
-Do *not* use it as the node.js equivalent of `On Error Resume Next`. An
-unhandled exception means your application - and by extension node.js itself -
-is in an undefined state. Blindly resuming means *anything* could happen.
+*不要* 使用该事件，觉得 Node.js 就像是 `遇到错误就重新开始下一次`。一个未处理的异常意味着你的应用——引申开来也是 Node.js 自身——处在一个未定义的情况下。盲目的重新开始意味着 *任何事情* 可能会发生。
 
-Think of resuming as pulling the power cord when you are upgrading your system.
-Nine out of ten times nothing happens - but the 10th time, your system is bust.
+想象一下重新开始就像你在升级你的系统时拔掉了电源线。十次里面有九次什么事也没有发生——但是第10次的时候，你的系统毁坏了。
 
-You have been warned.
+你已经被警告过了。
 
-## Signal Events
+## Signal Events 信号事件
 
 <!--type=event-->
 <!--name=SIGINT, SIGHUP, etc.-->
 
-Emitted when the processes receives a signal. See sigaction(2) for a list of
-standard POSIX signal names such as SIGINT, SIGHUP, etc.
+当进程接收到一个信号时被触发。可以参见 sigaction(2)，标准可移植性操作系统接口（POSIX）的信号名称列表，例如SIGINT、SIGHUP等。
 
-Example of listening for `SIGINT`:
+监听 `SIGINT` 的例子：
 
     // Start reading from stdin so we don't exit.
     process.stdin.resume();
@@ -115,8 +97,7 @@ Example of listening for `SIGINT`:
       console.log('Got SIGINT.  Press Control-D to exit.');
     });
 
-An easy way to send the `SIGINT` signal is with `Control-C` in most terminal
-programs.
+一个发送 `SIGINT` 简单的方法是 `Ctrl-C`，在大多数的终端中都有效。
 
 Note:
 
