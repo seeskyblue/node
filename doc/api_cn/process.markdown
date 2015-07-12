@@ -99,14 +99,13 @@ Node 当没有其他等待的异步操作时，通常会返回退出状态代码
 
 一个发送 `SIGINT` 简单的方法是 `Ctrl-C`，在大多数的终端中都有效。
 
-Note:
+注：
 
-- `SIGUSR1` is reserved by node.js to start the debugger.  It's possible to
-  install a listener but that won't stop the debugger from starting.
-- `SIGTERM` and `SIGINT` have default handlers on non-Windows platforms that resets
-  the terminal mode before exiting with code `128 + signal number`. If one of
-  these signals has a listener installed, its default behaviour will be removed
-  (node will no longer exit).
+- `SIGUSR1` 被 Node.js 保留以启动调试器。可以创建监听器监听，但并不会阻止调试器启动。
+
+- `SIGTERM` 和 `SIGINT` 在非 Windows 平台上有默认处理，即在退出状态代码为 `128 + 信号代码` 时重置终端模式。当这些信号有创建监听是，它们的默认行为将被取消。
+  （Node 将不会退出）。
+  
 - `SIGPIPE` is ignored by default, it can have a listener installed.
 - `SIGHUP` is generated on Windows when the console window is closed, and on other
   platforms under various similar conditions, see signal(7). It can have a
