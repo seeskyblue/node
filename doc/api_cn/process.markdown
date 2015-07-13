@@ -103,38 +103,38 @@ Node 当没有其他等待的异步操作时，通常会返回退出状态代码
 
 - `SIGUSR1` 被 Node.js 保留以启动调试器。可以创建监听器监听，但并不会阻止调试器启动。
 
-- `SIGTERM` 和 `SIGINT` 在非 Windows 平台上有默认处理，即在退出状态代码为 `128 + 信号代码` 时重置终端模式。当这些信号有创建监听是，它们的默认行为将被取消。
+- `SIGTERM` 和 `SIGINT` 在非 Windows 平台上有默认处理，即在退出状态代码为 `128 + 信号代码` 时重置终端模式。当这些信号有创建监听时，它们的默认行为将被取消。
   （Node 将不会退出）。
   
-- `SIGPIPE` is ignored by default, it can have a listener installed.
-- `SIGHUP` is generated on Windows when the console window is closed, and on other
-  platforms under various similar conditions, see signal(7). It can have a
-  listener installed, however node will be unconditionally terminated by Windows
-  about 10 seconds later. On non-Windows platforms, the default behaviour of
-  `SIGHUP` is to terminate node, but once a listener has been installed its
-  default behaviour will be removed.
-- `SIGTERM` is not supported on Windows, it can be listened on.
-- `SIGINT` from the terminal is supported on all platforms, and can usually be
-  generated with `CTRL+C` (though this may be configurable). It is not generated
-  when terminal raw mode is enabled.
-- `SIGBREAK` is delivered on Windows when `CTRL+BREAK` is pressed, on non-Windows
-  platforms it can be listened on, but there is no way to send or generate it.
+- `SIGPIPE` 默认被忽略，可以创建监听。
+
+- `SIGHUP` 在 Windows 平台上当控制台窗口被关闭时产生，其他平台上各种类似的情况下，参见 signal(7)。可以创建监听，但是 Node 还是会被 Windows 无条件的在大约10秒后终止。在非 Windows 平台，`SIGHUP` 的默认行为是终止 Node，但一旦监听被创建，它的默认行为就会被取消。
+
+- `SIGTERM` 在 Windows 平台不被支持，可以创建监听。
+
+- `SIGINT` 由终端产生，可以被所有平台支持。通常可以由 `CTRL+C` 产生（不过这是可设置的）。当终端的 raw 模式启动时不会产生。
+
+- `SIGBREAK` 在 Windows 平台当按下 `CTRL+BREAK` 时释放，在非 Windows 平台可以被监听，但是没有方法可以发送或产生该信号
+
 - `SIGWINCH` is delivered when the console has been resized. On Windows, this will
   only happen on write to the console when the cursor is being moved, or when a
   readable tty is used in raw mode.
-- `SIGKILL` cannot have a listener installed, it will unconditionally terminate
-  node on all platforms.
-- `SIGSTOP` cannot have a listener installed.
 
-Note that Windows does not support sending Signals, but node offers some
-emulation with `process.kill()`, and `child_process.kill()`:
-- Sending signal `0` can be used to search for the existence of a process
-- Sending `SIGINT`, `SIGTERM`, and `SIGKILL` cause the unconditional exit of the
-  target process.
+- `SIGWINCH` 当控制台窗口被调整大小时释放。在 Windows 平台上只会在光标正在被移动时写入控制台时发生，或当一个可读的 tty 被用在 raw 模式时。
+
+- `SIGKILL` 无法创建监听，它会在所有平台上无条件终止 Node。
+
+- `SIGSTOP` 无法创建监听。
+
+注，Windows 平台不支持发送信号，但是 Node 提供了一些模拟方法，比如 `process.kill()` 和 `child_process.kill()`：
+
+- 发送信号 `0` 可以被用来寻找进程的存在。
+
+- 发送 `SIGINT`、 `SIGTERM` 和 `SIGKILL` 会引起目标进程无条件地退出。
 
 ## process.stdout
 
-A `Writable Stream` to `stdout` (on fd `1`).
+一个指向 `标准输出流（stdout）` 的 `可写流（Writable Stream）`（on fd `1`）。
 
 Example: the definition of `console.log`
 
