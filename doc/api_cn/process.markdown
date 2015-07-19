@@ -309,18 +309,13 @@ process.execArgv 的结果为：
 
 ## process.exitCode
 
-A number which will be the process exit code, when the process either
-exits gracefully, or is exited via `process.exit()` without specifying
-a code.
+一个预先设定的进程退出代码的数字，当进程正常退出，或通过 `process.exit()` 退出但未指定代码的时候使用。
 
-Specifying a code to `process.exit(code)` will override any previous
-setting of `process.exitCode`.
-
+给 `process.exit(code)` 指定代码会覆盖任何之前 `process.exitCode` 的设置。
 
 ## process.getgid()
 
-Note: this function is only available on POSIX platforms (i.e. not Windows,
-Android)
+注：该函数只提供在 POSIX 平台上（比如，非 Windows 平台、Android 平台）。
 
 Gets the group identity of the process. (See getgid(2).)
 This is the numerical group id, not the group name.
