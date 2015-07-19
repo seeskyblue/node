@@ -136,24 +136,21 @@ Node 当没有其他等待的异步操作时，通常会返回退出状态代码
 
 一个指向 `标准输出流（stdout）` 的 `可写流（Writable Stream）`（on fd `1`）。
 
-Example: the definition of `console.log`
+例如，`console.log` 的定义：
 
     console.log = function(d) {
       process.stdout.write(d + '\n');
     };
 
-`process.stderr` and `process.stdout` are unlike other streams in Node in
-that they cannot be closed (`end()` will throw), they never emit the `finish`
-event and that writes are usually blocking.
+`process.stderr` 和 `process.stdout` 和其他 Node 的流不同，因为它们不同被关闭（`end()` 会抛出异常），它们从不会产生 `finish` 事件并且写入的时候通常是阻塞的。
 
-- They are blocking in the case that they refer to regular files or TTY file
-  descriptors.
-- In the case they refer to pipes:
-  - They are blocking in Linux/Unix.
-  - They are non-blocking like other streams in Windows.
+- 当它们引用常规文件或者TTY文件描述符时是阻塞的。
 
-To check if Node is being run in a TTY context, read the `isTTY` property
-on `process.stderr`, `process.stdout`, or `process.stdin`:
+- 当它们引用管道：
+  - 在 Linux/Unix 平台时，它们是阻塞的。
+  - 在 Windows 平台时，它们同其他流一样是非阻塞的。
+
+为了检测 Node 是否正在 TTY 的上下文空间中被运行着，可以从 `process.stderr`，`process.stdout` 或 `process.stdin` 上读取 `isTTY` 属性：
 
     $ node -p "Boolean(process.stdin.isTTY)"
     true
@@ -165,28 +162,25 @@ on `process.stderr`, `process.stdout`, or `process.stdin`:
     $ node -p "Boolean(process.stdout.isTTY)" | cat
     false
 
-See [the tty docs](tty.html#tty_tty) for more information.
+更多信息参见 [TTY 文档](tty.html#tty_tty)。
 
 ## process.stderr
 
-A writable stream to stderr (on fd `2`).
+一个指向 `标准错误输出流（stderr）` 的 `可写流（Writable Stream）`（on fd `2`）。
 
-`process.stderr` and `process.stdout` are unlike other streams in Node in
-that they cannot be closed (`end()` will throw), they never emit the `finish`
-event and that writes are usually blocking.
+`process.stderr` 和 `process.stdout` 和其他 Node 的流不同，因为它们不同被关闭（`end()` 会抛出异常），它们从不会产生 `finish` 事件并且写入的时候通常是阻塞的。
 
-- They are blocking in the case that they refer to regular files or TTY file
-  descriptors.
-- In the case they refer to pipes:
-  - They are blocking in Linux/Unix.
-  - They are non-blocking like other streams in Windows.
+- 当它们引用常规文件或者TTY文件描述符时是阻塞的。
 
+- 当它们引用管道：
+  - 在 Linux/Unix 平台时，它们是阻塞的。
+  - 在 Windows 平台时，它们同其他流一样是非阻塞的。
 
 ## process.stdin
 
-A `Readable Stream` for stdin (on fd `0`).
+一个指向 `标准输入流（stdin）` 的 `可读流（Readable Stream）`（on fd `0`）。
 
-Example of opening standard input and listening for both events:
+打开标准输入并监听两个事件的例子：
 
     process.stdin.setEncoding('utf8');
 
@@ -201,30 +195,24 @@ Example of opening standard input and listening for both events:
       process.stdout.write('end');
     });
 
-As a Stream, `process.stdin` can also be used in "old" mode that is compatible
-with scripts written for node prior v0.10.
-For more information see
-[Stream compatibility](stream.html#stream_compatibility_with_older_node_versions).
+作为流（Stream）,`process.stdin` 也可以被用在“旧”模式中，因此兼容为 Node v0.10 之前的版本所写的脚本。
 
-In "old" Streams mode the stdin stream is paused by default, so one
-must call `process.stdin.resume()` to read from it. Note also that calling
-`process.stdin.resume()` itself would switch stream to "old" mode.
+更多信息参见 [流兼容性](stream.html#stream_compatibility_with_older_node_versions) 。
 
-If you are starting a new project you should prefer a more recent "new" Streams
-mode over "old" one.
+在“旧”流模式中，stdin 流默认是被暂停的。所以必须调用 `process.stdin.resume()` 来读取它。注意，调用 `process.stdin.resume()` 之后流自己也会切换到“旧”模式。
+
+如果你正开始一个新的项目，你应该优先考虑使用一个更“新”的流模式而不是“旧”的。
 
 ## process.argv
 
-An array containing the command line arguments.  The first element will be
-'node', the second element will be the name of the JavaScript file.  The
-next elements will be any additional command line arguments.
+一个包含了命令行参数的数组。第一个元素肯定是 “node”，第二个是 JavaScript 文件的名字。之后便是其他附加之后的命令行参数。
 
     // print process.argv
     process.argv.forEach(function(val, index, array) {
       console.log(index + ': ' + val);
     });
 
-This will generate:
+运行结果：
 
     $ node process-2.js one two=three four
     0: node
@@ -236,43 +224,37 @@ This will generate:
 
 ## process.execPath
 
-This is the absolute pathname of the executable that started the process.
+可以被运行的启动进程的绝对路径。
 
-Example:
+例如：
 
     /usr/local/bin/node
 
 
 ## process.execArgv
 
-This is the set of node-specific command line options from the
-executable that started the process.  These options do not show up in
-`process.argv`, and do not include the node executable, the name of
-the script, or any options following the script name. These options
-are useful in order to spawn child processes with the same execution
-environment as the parent.
+从可执行的启动进程的（命令）中获取的 Node 特定的命令行可选项的集合。这些可选项不会出现在 `process.argv` 中，并且不包括 Node 可执行的脚本文件的名称，或者其他跟在脚本名称之后的可选项。这些可选项有助于产生子进程，并且它们与父进程有相同的执行环境。
 
-Example:
+例如:
 
     $ node --harmony script.js --version
 
-results in process.execArgv:
+process.execArgv 的结果为：
 
     ['--harmony']
 
-and process.argv:
+而 process.argv 的结果为：
 
     ['/usr/local/bin/node', 'script.js', '--version']
 
 
 ## process.abort()
 
-This causes node to emit an abort. This will cause node to exit and
-generate a core file.
+这会使 Node 产生一个中止事件。这会引起 Node 退出并产生一个核心文件。
 
 ## process.chdir(directory)
 
-Changes the current working directory of the process or throws an exception if that fails.
+改变进程的当前工作目录，如果失败抛出一个异常。
 
     console.log('Starting directory: ' + process.cwd());
     try {
@@ -283,20 +265,17 @@ Changes the current working directory of the process or throws an exception if t
       console.log('chdir: ' + err);
     }
 
-
-
 ## process.cwd()
 
-Returns the current working directory of the process.
+返回进程的当前工作目录。
 
     console.log('Current directory: ' + process.cwd());
 
-
 ## process.env
 
-An object containing the user environment. See environ(7).
+一个包含用户环境的对象，参见 environ(7)。
 
-An example of this object looks like:
+该对象看起来就像这样：
 
     { TERM: 'xterm-256color',
       SHELL: '/usr/local/bin/bash',
@@ -309,28 +288,24 @@ An example of this object looks like:
       LOGNAME: 'maciej',
       _: '/usr/local/bin/node' }
 
-You can write to this object, but changes won't be reflected outside of your
-process. That means that the following won't work:
+你可以修改该对象，但是修改的部分并不会反应到进程志之外。这意味着以下这样使用是不会有效的：
 
     node -e 'process.env.foo = "bar"' && echo $foo
 
-But this will:
+但这样会：
 
     process.env.foo = 'bar';
     console.log(process.env.foo);
 
-
 ## process.exit([code])
 
-Ends the process with the specified `code`.  If omitted, exit uses the
-'success' code `0`.
+使用指定 `代码（code）`结束进程。如果代码被省略，则会使用表示“成功”的代码 `0`。
 
-To exit with a 'failure' code:
+使用“失败”代码退出：
 
     process.exit(1);
 
-The shell that executed node should see the exit code as 1.
-
+执行 Node 的运行环境会看到该退出代码为 1。
 
 ## process.exitCode
 
