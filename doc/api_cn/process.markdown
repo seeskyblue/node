@@ -317,8 +317,7 @@ process.execArgv 的结果为：
 
 注：该函数只提供在 POSIX 平台上（比如，非 Windows 平台、Android 平台）。
 
-Gets the group identity of the process. (See getgid(2).)
-This is the numerical group id, not the group name.
+获取进程的组标识（参见 getgid(2)）。这是数字型的组ID，而不是组的名字。
 
     if (process.getgid) {
       console.log('Current gid: ' + process.getgid());
@@ -327,12 +326,9 @@ This is the numerical group id, not the group name.
 
 ## process.setgid(id)
 
-Note: this function is only available on POSIX platforms (i.e. not Windows,
-Android)
+注：该函数只提供在 POSIX 平台上（比如，非 Windows 平台、Android 平台）。
 
-Sets the group identity of the process. (See setgid(2).)  This accepts either
-a numerical ID or a groupname string. If a groupname is specified, this method
-blocks while resolving it to a numerical ID.
+设置进程的组标识（参见 getgid(2)）。该方法接受数字型ID或者组名字符串。如果是组名，该方法在解析组名到数字型ID时会被阻塞。
 
     if (process.getgid && process.setgid) {
       console.log('Current gid: ' + process.getgid());
@@ -348,8 +344,7 @@ blocks while resolving it to a numerical ID.
 
 ## process.getuid()
 
-Note: this function is only available on POSIX platforms (i.e. not Windows,
-Android)
+注：该函数只提供在 POSIX 平台上（比如，非 Windows 平台、Android 平台）。
 
 Gets the user identity of the process. (See getuid(2).)
 This is the numerical userid, not the username.
